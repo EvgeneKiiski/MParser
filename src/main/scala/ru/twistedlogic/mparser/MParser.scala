@@ -27,15 +27,11 @@ case class MParser[A, S](run: Stream[S] => Either[MParserError, (A, Stream[S])])
     run(str).fold(f(_).run(str), Right.apply)
   }
 
-  def *>[B](mb: => MParser[B, S]): MParser[B, S] = MParser { str =>
-    run(str).fold(Left.apply, { case (_, tail) => mb.run(tail) })
-  }
-
-  def ap[B](f: MParser[A => B, S]): MParser[B, S] = MParser { str =>
+  def ap[B](f: => MParser[A => B, S]): MParser[B, S] = MParser { str =>
     run(str).flatMap { case (a, tail) => f.run(tail).map { case (ab, tf) => (ab(a), tf) } }
   }
 
-  def ap2[B, C](fb: MParser[B, S])(f: MParser[(A, B) => C, S]): MParser[C, S] =
+  def ap2[B, C](fb: MParser[B, S])(f: => MParser[(A, B) => C, S]): MParser[C, S] =
     fb.ap(ap(f.map(_.curried)))
 
   def apply2[B, C](fb: MParser[B, S])(f: (A, B) => C): MParser[C, S] = ap2(fb)(MParser.pure(f))
