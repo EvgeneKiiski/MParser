@@ -97,13 +97,15 @@ object MParser {
       var current = str
       var builder: mutable.Builder[A, Seq[A]] = Seq.newBuilder[A]
       var continue = true
-      while (continue) {
+      while (continue && current.nonEmpty) {
         p.run(current) match {
           case Left(_) =>
             continue = false
           case Right((v, tail)) =>
             current = tail
             builder += v
+            //TODO
+            println(s"add=$v tail=$tail")
         }
       }
       Right((builder.result(), current))
@@ -150,7 +152,7 @@ object MParser {
     } else {
       var current = str
       var continue = true
-      while (continue) {
+      while (continue && current.nonEmpty) {
         p.run(current) match {
           case Left(_) => continue = false
           case Right((_, tail)) => current = tail

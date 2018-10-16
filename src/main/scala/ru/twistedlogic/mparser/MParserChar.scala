@@ -51,4 +51,10 @@ object MParserChar {
   def spaceChar(): MParser[Char, Char] = MParser.satisfy(_.isSpaceChar)
 
 
+  /**
+    * char
+    */
+  def char(c: Char): MParser[Char, Char] = MParser.satisfy(_ == c)
+
+
 }

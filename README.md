@@ -1,4 +1,4 @@
-# MParser - stream parser
+# MParser - simple monad parser
 
 It is look like Haskell Parsec.
 

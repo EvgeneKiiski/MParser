@@ -6,7 +6,7 @@ import ru.twistedlogic.mparser.MParserError.EmptyStream
 /**
   * @author Eugene Kiyski
   */
-class MParsersTest extends WordSpec with ParallelTestExecution with Matchers {
+class MParserTest extends WordSpec with ParallelTestExecution with Matchers {
 
   private val abcParser = MParser.satisfy((v:Char) => v == 'a') <|> MParser.satisfy((v:Char) => v == 'b') <|> MParser.satisfy((v:Char) => v == 'c')
   private val anyParser = MParser.any[Char]()
