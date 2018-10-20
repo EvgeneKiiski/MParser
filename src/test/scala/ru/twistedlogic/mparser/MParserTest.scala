@@ -155,7 +155,7 @@ class MParserTest extends WordSpec with ParallelTestExecution with Matchers {
     }
     "parse string aaaBBB" in {
       val str = "abcBBB"
-      abcParser.apply2(abcParser) { case (a, b) => "" + a + b }.run(str.toStream) shouldEqual Right(("ba", Stream('c', 'B', 'B', 'B')))
+      abcParser.apply2(abcParser) { case (a, b) => "" + a + b }.run(str.toStream) shouldEqual Right(("ab", Stream('c', 'B', 'B', 'B')))
     }
 
   }

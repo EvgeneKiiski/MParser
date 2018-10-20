@@ -28,7 +28,7 @@ case class MParser[A, S](run: Stream[S] => Either[MParserError, (A, Stream[S])])
   }
 
   def ap[B](f: => MParser[A => B, S]): MParser[B, S] = MParser { str =>
-    run(str).flatMap { case (a, tail) => f.run(tail).map { case (ab, tf) => (ab(a), tf) } }
+    f.run(str).flatMap{ case (ab, tail) => run(tail).map { case (a, tf) => (ab(a), tf) }}
   }
 
   def ap2[B, C](fb: MParser[B, S])(f: => MParser[(A, B) => C, S]): MParser[C, S] =
