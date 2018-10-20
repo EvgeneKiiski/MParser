@@ -1,8 +1,8 @@
-package ru.twistedlogic.mparser
+package org.mparser
 
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
-import ru.twistedlogic.mparser.MParserError.{EmptyStream, UnexpectedSymbol}
+import MParserError.{EmptyStream, UnexpectedSymbol}
 
 /**
   * @author Eugene Kiyski
@@ -16,7 +16,7 @@ object MParsersSatisfySpecification extends Properties("Satisfy") {
       val first = str.head
       MParser.satisfy((ch: Char) => ch == first).run(str.toStream) match {
         case Left(_) => false
-        case Right((ch, tail)) if ch == first => true
+        case Right((ch, _)) if ch == first => true
         case _ => false
       }
     }

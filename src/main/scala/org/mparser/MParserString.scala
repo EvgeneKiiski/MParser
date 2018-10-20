@@ -1,7 +1,6 @@
-package ru.twistedlogic.mparser
+package org.mparser
 
-import ru.twistedlogic.mparser.MParser.leftEmptyStream
-import ru.twistedlogic.mparser.MParserError.{EmptyStream, UnexpectedSymbol}
+import org.mparser.MParserError.{ EmptyStream, UnexpectedSymbol }
 
 import util.control.Breaks._
 

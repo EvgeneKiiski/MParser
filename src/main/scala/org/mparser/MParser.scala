@@ -1,7 +1,6 @@
-package ru.twistedlogic
-package mparser
+package org.mparser
 
-import ru.twistedlogic.mparser.MParserError.EmptyStream
+import org.mparser.MParserError.EmptyStream
 
 import scala.collection.mutable
 

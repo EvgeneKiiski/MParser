@@ -1,7 +1,8 @@
-package ru.twistedlogic.mparser.test
+package org.mparser.test
 
-import ru.twistedlogic.mparser.{MParser, MParserChar, MParserError}
-import ru.twistedlogic.mparser.MParserOps._
+import org.mparser.{ MParser, MParserChar }
+import ru.twistedlogic.mparser.MParser
+import org.mparser.MParserOps._
 
 /**
   * @author Eugene Kiyski

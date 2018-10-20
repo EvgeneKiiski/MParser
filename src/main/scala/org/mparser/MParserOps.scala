@@ -1,8 +1,7 @@
-package ru.twistedlogic.mparser
+package org.mparser
 
 /**
-  * Evgenii Kiiski 
-  * 16/10/2018
+  * @author  Evgenii Kiiski
   */
 object MParserOps {
 

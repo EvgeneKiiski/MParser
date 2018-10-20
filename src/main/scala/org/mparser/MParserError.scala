@@ -1,6 +1,8 @@
-package ru.twistedlogic
-package mparser
+package org.mparser
 
+/**
+  * @author Eugene Kiyski
+  */
 sealed trait MParserError
 
 object MParserError {

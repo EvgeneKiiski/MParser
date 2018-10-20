@@ -1,4 +1,4 @@
-package ru.twistedlogic.mparser
+package org.mparser
 
 import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties

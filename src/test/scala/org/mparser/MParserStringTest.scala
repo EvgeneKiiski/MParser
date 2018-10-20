@@ -1,7 +1,7 @@
-package ru.twistedlogic.mparser
+package org.mparser
 
 import org.scalatest.{Matchers, ParallelTestExecution, WordSpec}
-import ru.twistedlogic.mparser.MParserError.EmptyStream
+import MParserError.EmptyStream
 
 /**
   * Evgenii Kiiski 

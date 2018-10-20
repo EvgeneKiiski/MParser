@@ -1,4 +1,4 @@
-package ru.twistedlogic.mparser
+package org.mparser
 
 /**
   * @author Eugene Kiyski
