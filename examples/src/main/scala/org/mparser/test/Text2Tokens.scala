@@ -1,8 +1,7 @@
 package org.mparser.test
 
-import org.mparser.{ MParser, MParserChar }
-import ru.twistedlogic.mparser.MParser
-import org.mparser.MParserOps._
+import org.mparser.MParserChar._
+import org.mparser.MParser._
 
 /**
   * @author Eugene Kiyski
@@ -14,11 +13,11 @@ object Text2Tokens extends App {
               First: read same text
     """
 
-  val delimiter = MParserChar.space() <|> MParserChar.char('.') <|> MParserChar.char(':') <|> MParserChar.char('\n')
+  val delimiter = space() <|> char('.') <|> char(':') <|> char('\n')
 
-  val token = (MParser.skipMany1(delimiter) >> MParser.many1(MParserChar.letterOrDigit())).map(_.mkString)
+  val token = (skipMany1(delimiter) >> many1(letterOrDigit())).map(_.mkString)
 
-  val result = MParser.many1(token).run(text.toStream)
+  val result = many1(token).run(text.toStream)
 
   println(result)
 

@@ -10,6 +10,10 @@ case class MParser[A, S](run: Stream[S] => Either[MParserError, (A, Stream[S])])
     run(str).map { case (a, tail) => (f(a), tail) }
   }
 
+  def `$>`[B](b: B): MParser[B, S] = MParser { str =>
+    run(str).map { case (_, tail) => (b, tail) }
+  }
+
   def flatMap[B](f: A => MParser[B, S]): MParser[B, S] = MParser { str =>
     run(str).fold(Left.apply, { case (a, tail) => f(a).run(tail) })
   }
@@ -18,7 +22,7 @@ case class MParser[A, S](run: Stream[S] => Either[MParserError, (A, Stream[S])])
 
   def >>[B](mb: => MParser[B, S]): MParser[B, S] = flatMap(_ => mb)
 
-  def <|>(b: MParser[A, S]): MParser[A, S] = MParser { str =>
+  def <|>(b: => MParser[A, S]): MParser[A, S] = MParser { str =>
     run(str).fold(_ => b.run(str), Right.apply)
   }
 
@@ -27,7 +31,7 @@ case class MParser[A, S](run: Stream[S] => Either[MParserError, (A, Stream[S])])
   }
 
   def ap[B](f: => MParser[A => B, S]): MParser[B, S] = MParser { str =>
-    f.run(str).flatMap{ case (ab, tail) => run(tail).map { case (a, tf) => (ab(a), tf) }}
+    f.run(str).flatMap { case (ab, tail) => run(tail).map { case (a, tf) => (ab(a), tf) } }
   }
 
   def ap2[B, C](fb: MParser[B, S])(f: => MParser[(A, B) => C, S]): MParser[C, S] =
@@ -36,7 +40,7 @@ case class MParser[A, S](run: Stream[S] => Either[MParserError, (A, Stream[S])])
   def apply2[B, C](fb: MParser[B, S])(f: (A, B) => C): MParser[C, S] = ap2(fb)(MParser.pure(f))
 
   def tuple2[B](fb: => MParser[B, S]): MParser[(A, B), S] =
-    apply2(fb)((_,_))
+    apply2(fb)((_, _))
 
   def apply3[B, C, D](fb: MParser[B, S])(fc: MParser[C, S])(f: (A, B, C) => D): MParser[D, S] =
     tuple2(fb).apply2(fc)((ab, c) => f(ab._1, ab._2, c))
@@ -67,7 +71,7 @@ object MParser {
   def satisfy[S](ch: S => Boolean): MParser[S, S] = MParser { str =>
     str.headOption.map {
       case s if ch(s) => Right((s, str.tail))
-      case s => Left(MParserError.UnexpectedSymbol(s"Unexpected symbol $s", str.tail))
+      case s => Left(MParserError.UnexpectedSymbol(s, str.tail))
     }.getOrElse(leftEmptyStream)
   }
 
