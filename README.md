@@ -35,8 +35,8 @@ println(result)
 
 ## Resources
 
-The [docs](http://pmarser.org/).
+The [docs](http://mparser.org/).
 
-The [Scaladocs](http://scaladoc.pmarser.org/).
+The [Scaladocs](http://scaladoc.mparser.org/).
 
 The [examples module](https://github.com/EvgeneKiiski/MParser/tree/master/examples/src/main/scala/org/mparser/test).
