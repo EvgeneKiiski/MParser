@@ -53,7 +53,6 @@ object MParserString {
     result
   }
 
-  //TODO fix поддерживаются варианты \', \", \\, \/, \t, \n, \r, \f и \b), или записаны шестнадцатеричным кодом в кодировке Unicode в виде \uFFFF.
   def quotedString(): MParser[String, Char] = MParser { str =>
     if (str.isEmpty) {
       Left(EmptyStream)
