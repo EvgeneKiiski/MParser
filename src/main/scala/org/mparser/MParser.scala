@@ -103,8 +103,6 @@ object MParser {
           case Right((v, tail)) =>
             current = tail
             builder += v
-            //TODO
-            println(s"add=$v tail=$tail")
         }
       }
       Right((builder.result(), current))

@@ -1,7 +1,7 @@
 package org.mparser
 
 /**
-  * @author Eugene Kiyski
+  * @author Evgenii Kiiski
   */
 sealed trait MParserError
 

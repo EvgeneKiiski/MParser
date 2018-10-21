@@ -4,7 +4,7 @@ import org.mparser.MParserChar._
 import org.mparser.MParser._
 
 /**
-  * @author Eugene Kiyski
+  * @author Evgenii Kiiski
   */
 object Text2Tokens extends App {
 

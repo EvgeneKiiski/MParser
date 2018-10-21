@@ -5,7 +5,7 @@ import org.scalacheck.Properties
 import MParserError.{EmptyStream, UnexpectedSymbol}
 
 /**
-  * @author Eugene Kiyski
+  * @author Evgenii Kiiski
   */
 object MParsersSatisfySpecification extends Properties("Satisfy") {
 

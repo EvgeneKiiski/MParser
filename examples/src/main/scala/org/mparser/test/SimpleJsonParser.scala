@@ -4,13 +4,12 @@ import org.mparser.MParser
 import org.mparser.MParserOps._
 import org.mparser.MParser._
 import org.mparser.MParserChar._
-import org.mparser.MParserError.CustomError
 import org.mparser.MParserString._
+import org.mparser.MParserNumber._
 
-import scala.util.control.NonFatal
 
 /**
-  * @author Eugene Kiyski
+  * @author Evgenii Kiiski
   * It is not a json parser, it is just a example
   */
 object SimpleJsonParser extends App {
@@ -19,7 +18,7 @@ object SimpleJsonParser extends App {
     """
       |{
       |   "firstName": "Иван",
-      |   "lastName": "Иванов",
+      |   "lastName": "Иван\"ов",
       |   "isDone": true,
       |   "address": {
       |       "streetAddress": "Московское ш., 101, кв.101",
@@ -46,24 +45,16 @@ object SimpleJsonParser extends App {
   }
 
   val delimiter = space() <|> char(',') <|> char('\n') <|> char('\r')
-  //TODO add operator not " work with escaped strings
-  val key = ˆ(char('"') >> manyTill(char('"')), char('"'))((s, _) => s).map(_.mkString)
 
-  val stringParser: MParser[Json, Char] = ˆ(char('"') >> manyTill(char('"')), char('"'))((s, _) => s)
-    .map(_.mkString).map(Json.JString.apply)
+  val key = quotedString()
+
+  val stringParser: MParser[Json, Char] = quotedString().map(Json.JString.apply)
 
   val booleanParser: MParser[Json, Char] =
     (tokenCaseInsensitive("true").`$>`(true) <|> tokenCaseInsensitive("false").`$>`(false))
       .map(Json.JBoolean.apply)
 
-  //TODO add function parse numbers
-  val numberParser: MParser[Json, Char] = many1(digit() <|> char('.')).map(_.mkString).flatMap { s =>
-    try {
-      pure(BigDecimal(s))
-    } catch {
-      case NonFatal(e) => raiseError[BigDecimal, Char](CustomError(e))
-    }
-  }.map(Json.JNumber.apply)
+  val numberParser: MParser[Json, Char] = number().map(Json.JNumber.apply)
 
   val nullParser: MParser[Json, Char] = tokenCaseInsensitive("null").`$>`(Json.JNull)
 

@@ -4,7 +4,7 @@ import org.scalacheck.Prop.forAll
 import org.scalacheck.Properties
 
 /**
-  * @author Eugene Kiyski
+  * @author Evgenii Kiiski
   */
 object MParsersAnySpecification extends Properties("Any") {
 

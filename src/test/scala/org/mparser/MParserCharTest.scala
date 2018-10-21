@@ -3,7 +3,7 @@ package org.mparser
 import org.scalatest.{Matchers, ParallelTestExecution, WordSpec}
 
 /**
-  * @author Eugene Kiyski
+  * @author Evgenii Kiiski
   */
 class MParserCharTest extends WordSpec with ParallelTestExecution with Matchers {
 

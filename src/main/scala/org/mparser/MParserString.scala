@@ -1,13 +1,13 @@
 package org.mparser
 
-import org.mparser.MParserError.{ EmptyStream, UnexpectedSymbol }
+import org.mparser.MParserError.{EmptyStream, UnexpectedSymbol}
 
 import scala.collection.mutable
 import util.control.Breaks._
 
 
 /**
-  * @author Eugene Kiyski
+  * @author Evgenii Kiiski
   */
 object MParserString {
 
@@ -54,10 +54,10 @@ object MParserString {
   }
 
   //TODO fix поддерживаются варианты \', \", \\, \/, \t, \n, \r, \f и \b), или записаны шестнадцатеричным кодом в кодировке Unicode в виде \uFFFF.
-  def quotesString(): MParser[String, Char] = MParser { str =>
+  def quotedString(): MParser[String, Char] = MParser { str =>
     if (str.isEmpty) {
       Left(EmptyStream)
-    } else if(str.head != '"') {
+    } else if (str.head != '"') {
       Left(UnexpectedSymbol(str.head, str.tail))
     } else {
       var current = str.tail
@@ -65,7 +65,11 @@ object MParserString {
       var continue = true
       while (continue && current.nonEmpty) {
         current.head match {
-          //case '\' =>
+          case '\\' if current.tail.nonEmpty =>
+            builder += '\\'
+            current = current.tail
+            builder += current.head
+            current = current.tail
           case '"' =>
             current = current.tail
             continue = false
@@ -74,7 +78,11 @@ object MParserString {
             current = current.tail
         }
       }
-      Right((builder.result(), current))
+      if (continue) {
+        Left(UnexpectedSymbol(current.head, current.tail))
+      } else {
+        Right((builder.result(), current))
+      }
     }
   }
 

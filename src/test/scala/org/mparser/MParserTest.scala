@@ -4,7 +4,7 @@ import org.scalatest.{Matchers, ParallelTestExecution, WordSpec}
 import MParserError.EmptyStream
 
 /**
-  * @author Eugene Kiyski
+  * @author Evgenii Kiiski
   */
 class MParserTest extends WordSpec with ParallelTestExecution with Matchers {
 
