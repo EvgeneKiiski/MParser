@@ -39,4 +39,4 @@ The [docs](http://pmarser.org/).
 
 The [Scaladocs](http://scaladoc.pmarser.org/).
 
-The [examples module](https://github.com/EvgeneKiiski/MParser/examples).
+The [examples module](https://github.com/EvgeneKiiski/MParser/tree/master/examples/src/main/scala/org/mparser/test).
