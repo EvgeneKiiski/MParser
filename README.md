@@ -1,6 +1,6 @@
 # MParser
 
-MParser is simple parser have monadic structure.
+MParser is simple parser has monadic structure.
 
 ## Getting MParser
 
