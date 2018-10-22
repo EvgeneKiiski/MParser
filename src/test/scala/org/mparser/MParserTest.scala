@@ -2,6 +2,7 @@ package org.mparser
 
 import org.scalatest.{Matchers, ParallelTestExecution, WordSpec}
 import MParserError.EmptyStream
+import org.mparser.MParser._
 
 /**
   * @author Evgenii Kiiski
@@ -14,137 +15,137 @@ class MParserTest extends WordSpec with ParallelTestExecution with Matchers {
   "MParser.satisfy" should {
     "parse empty string" in {
       val str = ""
-      MParser.satisfy((v: Char) => v == 'a').run(str.toStream) shouldEqual Left(EmptyStream)
+      satisfy((v: Char) => v == 'a').run(str.toStream) shouldEqual Left(EmptyStream)
     }
     "parse string aaaBBB" in {
       val str = "aaaBBB"
-      MParser.satisfy((v: Char) => v == 'a').run(str.toStream) shouldEqual Right(('a', Stream('a', 'a', 'B', 'B', 'B')))
+      satisfy((v: Char) => v == 'a').run(str.toStream) shouldEqual Right(('a', Stream('a', 'a', 'B', 'B', 'B')))
     }
     "parse string BBB" in {
       val str = "BBB"
-      MParser.satisfy((v: Char) => v == 'a').run(str.toStream).isLeft shouldEqual true
+      satisfy((v: Char) => v == 'a').run(str.toStream).isLeft shouldEqual true
     }
   }
 
   "MParser.many" should {
     "parse empty string" in {
       val str = ""
-      MParser.many(anyParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream.empty))
+      many(anyParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream.empty))
     }
     "parse string aaaBBB" in {
       val str = "aaaBBB"
-      MParser.many(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'a', 'a'), Stream('B', 'B', 'B')))
+      many(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'a', 'a'), Stream('B', 'B', 'B')))
     }
     "parse string abcBBB" in {
       val str = "abcBBB"
-      MParser.many(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'b', 'c'), Stream('B', 'B', 'B')))
+      many(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'b', 'c'), Stream('B', 'B', 'B')))
     }
     "parse string BBB" in {
       val str = "BBB"
-      MParser.many(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
+      many(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
     }
     "parse string aaa" in {
       val str = "aaa"
-      MParser.many(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'a', 'a'), Stream.empty))
+      many(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'a', 'a'), Stream.empty))
     }
   }
 
   "MParser.many1" should {
     "parse empty string" in {
       val str = ""
-      MParser.many1(anyParser).run(str.toStream) shouldEqual Left(EmptyStream)
+      many1(anyParser).run(str.toStream) shouldEqual Left(EmptyStream)
     }
     "parse string aaaBBB" in {
       val str = "aaaBBB"
-      MParser.many1(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'a', 'a'), Stream('B', 'B', 'B')))
+      many1(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'a', 'a'), Stream('B', 'B', 'B')))
     }
     "parse string abcBBB" in {
       val str = "abcBBB"
-      MParser.many1(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'b', 'c'), Stream('B', 'B', 'B')))
+      many1(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'b', 'c'), Stream('B', 'B', 'B')))
     }
     "parse string BBB" in {
       val str = "BBB"
-      MParser.many1(abcParser).run(str.toStream).isLeft shouldEqual true
+      many1(abcParser).run(str.toStream).isLeft shouldEqual true
     }
     "parse string aaa" in {
       val str = "aaa"
-      MParser.many1(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'a', 'a'), Stream.empty))
+      many1(abcParser).run(str.toStream) shouldEqual Right((Seq('a', 'a', 'a'), Stream.empty))
     }
   }
 
   "MParser.skipMany" should {
     "parse empty string" in {
       val str = ""
-      MParser.skipMany(anyParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream.empty))
+      skipMany(anyParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream.empty))
     }
     "parse string aaaBBB" in {
       val str = "aaaBBB"
-      MParser.skipMany(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
+      skipMany(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
     }
     "parse string abcBBB" in {
       val str = "abcBBB"
-      MParser.skipMany(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
+      skipMany(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
     }
     "parse string BBB" in {
       val str = "BBB"
-      MParser.skipMany(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
+      skipMany(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
     }
     "parse string aaa" in {
       val str = "aaa"
-      MParser.skipMany(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream.empty))
+      skipMany(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream.empty))
     }
   }
 
   "MParser.skipMany1" should {
     "parse empty string" in {
       val str = ""
-      MParser.skipMany1(anyParser).run(str.toStream) shouldEqual Left(EmptyStream)
+      skipMany1(anyParser).run(str.toStream) shouldEqual Left(EmptyStream)
     }
     "parse string aaaBBB" in {
       val str = "aaaBBB"
-      MParser.skipMany1(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
+      skipMany1(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
     }
     "parse string abcBBB" in {
       val str = "abcBBB"
-      MParser.skipMany1(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
+      skipMany1(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('B', 'B', 'B')))
     }
     "parse string BBB" in {
       val str =
         """
         BBB
                 """
-      MParser.skipMany1(abcParser).run(str.toStream).isLeft shouldEqual true
+      skipMany1(abcParser).run(str.toStream).isLeft shouldEqual true
     }
     "parse string aaa" in {
       val str = "aaa"
-      MParser.skipMany1(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream.empty))
+      skipMany1(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream.empty))
     }
     "parse string n aaa" in {
       val str = "\naaa"
-      MParser.skipMany1(abcParser).run(str.toStream).isLeft shouldEqual true
+      skipMany1(abcParser).run(str.toStream).isLeft shouldEqual true
     }
   }
 
   "MParser.manyTill" should {
     "parse empty string" in {
       val str = ""
-      MParser.manyTill(anyParser).run(str.toStream) shouldEqual Left(EmptyStream)
+      manyTill(anyParser).run(str.toStream) shouldEqual Left(EmptyStream)
     }
     "parse string BCDaaa" in {
       val str = "BCDaaa"
-      MParser.manyTill(abcParser).run(str.toStream) shouldEqual Right((Seq('B', 'C', 'D'), Stream('a', 'a', 'a')))
+      manyTill(abcParser).run(str.toStream) shouldEqual Right((Seq('B', 'C', 'D'), Stream('a', 'a', 'a')))
     }
     "parse string BBBabc" in {
       val str = "BBBabc"
-      MParser.manyTill(abcParser).run(str.toStream) shouldEqual Right((Seq('B', 'B', 'B'), Stream('a', 'b', 'c')))
+      manyTill(abcParser).run(str.toStream) shouldEqual Right((Seq('B', 'B', 'B'), Stream('a', 'b', 'c')))
     }
     "parse string BBB" in {
       val str = "BBB"
-      MParser.manyTill(abcParser).run(str.toStream).isLeft shouldEqual true
+      manyTill(abcParser).run(str.toStream).isLeft shouldEqual true
     }
     "parse string aaa" in {
       val str = "aaa"
-      MParser.manyTill(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('a', 'a', 'a')))
+      manyTill(abcParser).run(str.toStream) shouldEqual Right((Seq.empty, Stream('a', 'a', 'a')))
     }
   }
 

@@ -1,6 +1,5 @@
 package org.mparser.test
 
-import org.mparser.MParserChar._
 import org.mparser.MParser._
 
 /**

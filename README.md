@@ -16,7 +16,7 @@ libraryDependencies += "org.mparser" %% "mparser" % "0.0.1"
 ## Quick Start
 
 ```scala
-import org.mparser.MParserChar._
+import org.mparser.MParser
 import org.mparser.MParser._
 
 val text ="""

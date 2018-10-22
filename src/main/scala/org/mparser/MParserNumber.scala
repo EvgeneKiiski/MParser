@@ -1,16 +1,15 @@
 package org.mparser
 
 import org.mparser.MParser._
-import org.mparser.MParserChar._
 import org.mparser.MParserError.CustomError
-import org.mparser.MParserOps.ˆˆ
 
 import scala.util.control.NonFatal
 
 /**
   * @author Evgenii Kiiski
   */
-object MParserNumber {
+trait MParserNumber {
+  this: MParserChar =>
 
   def number(delimiter: Char = '.'): MParser[Char, BigDecimal] = ˆˆ(
     many1(digit()),

@@ -9,7 +9,7 @@ import util.control.Breaks._
 /**
   * @author Evgenii Kiiski
   */
-object MParserString {
+trait MParserString {
 
   def token(token: String): MParser[Char, String] = MParser { str =>
     var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)

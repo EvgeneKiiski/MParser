@@ -3,7 +3,7 @@ package org.mparser
 /**
   * @author Evgenii Kiiski
   */
-object MParserOps {
+trait MParserOps {
 
   def ˆ[A, B, C, S](a: MParser[S, A], b: MParser[S, B])(f: (A, B) => C): MParser[S, C] =
     a.apply2(b)(f)

@@ -3,58 +3,59 @@ package org.mparser
 /**
   * @author Evgenii Kiiski
   */
-object MParserChar {
+trait MParserChar {
+  this: MParserCommon =>
 
   /**
     * Skips zero or more white space characters
     */
-  def spaces(): MParser[Char, Seq[Char]] = MParser.many(space())
+  def spaces(): MParser[Char, Seq[Char]] = many(space())
 
   /**
     * Space char
     */
-  def space(): MParser[Char, Char] = MParser.satisfy(_.isSpaceChar)
+  def space(): MParser[Char, Char] = satisfy(_.isSpaceChar)
 
   /**
     * Control char
     */
-  def control(): MParser[Char, Char] = MParser.satisfy(_.isControl)
+  def control(): MParser[Char, Char] = satisfy(_.isControl)
 
   /**
     * Upper case char
     */
-  def upper(): MParser[Char, Char] = MParser.satisfy(_.isUpper)
+  def upper(): MParser[Char, Char] = satisfy(_.isUpper)
 
   /**
     * Lower case char
     */
-  def lower(): MParser[Char, Char] = MParser.satisfy(_.isLower)
+  def lower(): MParser[Char, Char] = satisfy(_.isLower)
 
   /**
     * Letter or digit
     */
-  def letterOrDigit(): MParser[Char, Char] = MParser.satisfy(_.isLetterOrDigit)
+  def letterOrDigit(): MParser[Char, Char] = satisfy(_.isLetterOrDigit)
 
   /**
     * letter
     */
-  def letter(): MParser[Char, Char] = MParser.satisfy(_.isLetter)
+  def letter(): MParser[Char, Char] = satisfy(_.isLetter)
 
   /**
     * digit
     */
-  def digit(): MParser[Char, Char] = MParser.satisfy(_.isDigit)
+  def digit(): MParser[Char, Char] = satisfy(_.isDigit)
 
   /**
     * space char
     */
-  def spaceChar(): MParser[Char, Char] = MParser.satisfy(_.isSpaceChar)
+  def spaceChar(): MParser[Char, Char] = satisfy(_.isSpaceChar)
 
 
   /**
     * char
     */
-  def char(c: Char): MParser[Char, Char] = MParser.satisfy(_ == c)
+  def char(c: Char): MParser[Char, Char] = satisfy(_ == c)
 
 
 }
