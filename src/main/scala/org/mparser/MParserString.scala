@@ -11,7 +11,7 @@ import util.control.Breaks._
   */
 object MParserString {
 
-  def token(token: String): MParser[String, Char] = MParser { str =>
+  def token(token: String): MParser[Char, String] = MParser { str =>
     var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)
     var current = str
     breakable {
@@ -32,7 +32,7 @@ object MParserString {
     result
   }
 
-  def tokenCaseInsensitive(token: String): MParser[String, Char] = MParser { str =>
+  def tokenCaseInsensitive(token: String): MParser[Char, String] = MParser { str =>
     var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)
     var current = str
     breakable {
@@ -53,7 +53,7 @@ object MParserString {
     result
   }
 
-  def quotedString(): MParser[String, Char] = MParser { str =>
+  def quotedString(): MParser[Char, String] = MParser { str =>
     if (str.isEmpty) {
       Left(EmptyStream)
     } else if (str.head != '"') {

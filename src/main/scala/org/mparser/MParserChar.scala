@@ -8,7 +8,7 @@ object MParserChar {
   /**
     * Skips zero or more white space characters
     */
-  def spaces(): MParser[Seq[Char], Char] = MParser.many(space())
+  def spaces(): MParser[Char, Seq[Char]] = MParser.many(space())
 
   /**
     * Space char

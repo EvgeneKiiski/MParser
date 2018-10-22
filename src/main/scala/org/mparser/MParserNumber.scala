@@ -12,7 +12,7 @@ import scala.util.control.NonFatal
   */
 object MParserNumber {
 
-  def number(delimiter: Char = '.'): MParser[BigDecimal, Char] = ˆˆ(
+  def number(delimiter: Char = '.'): MParser[Char, BigDecimal] = ˆˆ(
     many1(digit()),
     many(char(delimiter)),
     many(digit())
@@ -21,7 +21,7 @@ object MParserNumber {
       try {
         pure(BigDecimal(s))
       } catch {
-        case NonFatal(e) => raiseError[BigDecimal, Char](CustomError(e))
+        case NonFatal(e) => raiseError[Char, BigDecimal](CustomError(e))
       }
     }
 

@@ -4,56 +4,56 @@ import org.mparser.MParserError.EmptyStream
 
 import scala.collection.mutable
 
-case class MParser[A, S](run: Stream[S] => Either[MParserError, (A, Stream[S])]) extends AnyVal {
+case class MParser[S, A](run: Stream[S] => Either[MParserError, (A, Stream[S])]) extends AnyVal {
 
-  def map[B](f: A => B): MParser[B, S] = MParser { str =>
+  def map[B](f: A => B): MParser[S, B] = MParser { str =>
     run(str).map { case (a, tail) => (f(a), tail) }
   }
 
-  def `$>`[B](b: B): MParser[B, S] = MParser { str =>
+  def `$>`[B](b: B): MParser[S, B] = MParser { str =>
     run(str).map { case (_, tail) => (b, tail) }
   }
 
-  def flatMap[B](f: A => MParser[B, S]): MParser[B, S] = MParser { str =>
+  def flatMap[B](f: A => MParser[S, B]): MParser[S, B] = MParser { str =>
     run(str).fold(Left.apply, { case (a, tail) => f(a).run(tail) })
   }
 
-  def >>=[B](f: A => MParser[B, S]): MParser[B, S] = flatMap(f)
+  def >>=[B](f: A => MParser[S, B]): MParser[S, B] = flatMap(f)
 
-  def >>[B](mb: => MParser[B, S]): MParser[B, S] = flatMap(_ => mb)
+  def >>[B](mb: => MParser[S, B]): MParser[S, B] = flatMap(_ => mb)
 
-  def <|>(b: => MParser[A, S]): MParser[A, S] = MParser { str =>
+  def <|>(b: => MParser[S, A]): MParser[S, A] = MParser { str =>
     run(str).fold(_ => b.run(str), Right.apply)
   }
 
-  def handleError(f: MParserError => MParser[A, S]): MParser[A, S] = MParser { str =>
+  def handleError(f: MParserError => MParser[S, A]): MParser[S, A] = MParser { str =>
     run(str).fold(f(_).run(str), Right.apply)
   }
 
-  def ap[B](f: => MParser[A => B, S]): MParser[B, S] = MParser { str =>
+  def ap[B](f: => MParser[S, A => B]): MParser[S, B] = MParser { str =>
     f.run(str).flatMap { case (ab, tail) => run(tail).map { case (a, tf) => (ab(a), tf) } }
   }
 
-  def ap2[B, C](fb: MParser[B, S])(f: => MParser[(A, B) => C, S]): MParser[C, S] =
+  def ap2[B, C](fb: MParser[S, B])(f: => MParser[S, (A, B) => C]): MParser[S, C] =
     fb.ap(ap(f.map(_.curried)))
 
-  def apply2[B, C](fb: MParser[B, S])(f: (A, B) => C): MParser[C, S] = ap2(fb)(MParser.pure(f))
+  def apply2[B, C](fb: MParser[S, B])(f: (A, B) => C): MParser[S, C] = ap2(fb)(MParser.pure(f))
 
-  def tuple2[B](fb: => MParser[B, S]): MParser[(A, B), S] =
+  def tuple2[B](fb: => MParser[S, B]): MParser[S, (A, B)] =
     apply2(fb)((_, _))
 
-  def apply3[B, C, D](fb: MParser[B, S])(fc: MParser[C, S])(f: (A, B, C) => D): MParser[D, S] =
+  def apply3[B, C, D](fb: MParser[S, B])(fc: MParser[S, C])(f: (A, B, C) => D): MParser[S, D] =
     tuple2(fb).apply2(fc)((ab, c) => f(ab._1, ab._2, c))
 
 }
 
 object MParser {
 
-  def apply[A, S](run: Stream[S] => Either[MParserError, (A, Stream[S])]): MParser[A, S] = new MParser(run)
+  def apply[S, A](run: Stream[S] => Either[MParserError, (A, Stream[S])]): MParser[S, A] = new MParser(run)
 
-  def pure[A, S](a: => A): MParser[A, S] = MParser(s => Right((a, s)))
+  def pure[S, A](a: => A): MParser[S, A] = MParser(s => Right((a, s)))
 
-  def raiseError[A, S](e: MParserError): MParser[A, S] = MParser(_ => Left(e))
+  def raiseError[S, A](e: MParserError): MParser[S, A] = MParser(_ => Left(e))
 
   private val leftEmptyStream = Left(MParserError.EmptyStream)
   private val rightEmpty = Right((Seq.empty, Stream.empty))
@@ -89,7 +89,7 @@ object MParser {
   /**
     * many p applies the parser p zero or more times. Returns a list of the returned values of p.
     */
-  def many[A, S](p: MParser[A, S]): MParser[Seq[A], S] = MParser { str =>
+  def many[S, A](p: MParser[S, A]): MParser[S, Seq[A]] = MParser { str =>
     if (str.isEmpty) {
       rightEmpty
     } else {
@@ -113,7 +113,7 @@ object MParser {
   /**
     * many1 p applies the parser p one or more times. Returns a list of the returned values of p.
     */
-  def many1[A, S](p: MParser[A, S]): MParser[Seq[A], S] = MParser { str =>
+  def many1[S, A](p: MParser[S, A]): MParser[S, Seq[A]] = MParser { str =>
     if (str.isEmpty) {
       leftEmptyStream
     } else {
@@ -143,7 +143,7 @@ object MParser {
   /**
     * skipMany p applies the parser p zero or more times, skipping its result.
     */
-  def skipMany[A, S](p: MParser[A, S]): MParser[Seq[A], S] = MParser { str =>
+  def skipMany[S, A](p: MParser[S, A]): MParser[S, Seq[A]] = MParser { str =>
     if (str.isEmpty) {
       rightEmpty
     } else {
@@ -162,7 +162,7 @@ object MParser {
   /**
     * skipMany1 p applies the parser p one or more times, skipping its result.
     */
-  def skipMany1[A, S](p: MParser[A, S]): MParser[Seq[A], S] = MParser { str =>
+  def skipMany1[S, A](p: MParser[S, A]): MParser[S, Seq[A]] = MParser { str =>
     if (str.isEmpty) {
       leftEmptyStream
     } else {
@@ -192,7 +192,7 @@ object MParser {
   /**
     * manyTill p end applies parser p zero or more times until parser end succeeds. Returns the list of values returned by p
     */
-  def manyTill[S](p: MParser[S, S]): MParser[Seq[S], S] = MParser { str =>
+  def manyTill[S](p: MParser[S, S]): MParser[S, Seq[S]] = MParser { str =>
     var current = str
     var builder: mutable.Builder[S, Seq[S]] = Seq.newBuilder[S]
     var result: Either[MParserError, (Seq[S], Stream[S])] = leftEmptyStream

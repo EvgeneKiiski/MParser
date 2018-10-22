@@ -48,29 +48,29 @@ object SimpleJsonParser extends App {
 
   val key = quotedString()
 
-  val stringParser: MParser[Json, Char] = quotedString().map(Json.JString.apply)
+  val stringParser: MParser[Char, Json] = quotedString().map(Json.JString.apply)
 
-  val booleanParser: MParser[Json, Char] =
+  val booleanParser: MParser[Char, Json] =
     (tokenCaseInsensitive("true").`$>`(true) <|> tokenCaseInsensitive("false").`$>`(false))
       .map(Json.JBoolean.apply)
 
-  val numberParser: MParser[Json, Char] = number().map(Json.JNumber.apply)
+  val numberParser: MParser[Char, Json] = number().map(Json.JNumber.apply)
 
-  val nullParser: MParser[Json, Char] = tokenCaseInsensitive("null").`$>`(Json.JNull)
+  val nullParser: MParser[Char, Json] = tokenCaseInsensitive("null").`$>`(Json.JNull)
 
-  def keyValueParser: MParser[(String, Json), Char] = ˆˆ(
+  def keyValueParser: MParser[Char, (String, Json)] = ˆˆ(
     skipMany(delimiter) >> key,
     skipMany(delimiter) >> char(':') >> skipMany(delimiter),
     stringParser <|> booleanParser <|> numberParser <|> nullParser <|> objectParser <|> arrayParser
   )((k, _, v) => k -> v)
 
-  def objectParser: MParser[Json, Char] = ˆˆ(
+  def objectParser: MParser[Char, Json] = ˆˆ(
     skipMany(delimiter) >> char('{'),
     many1(keyValueParser),
     skipMany(delimiter) >> char('}')
   )((_, vs, _) => vs).map(_.toMap).map(Json.JObject.apply)
 
-  def arrayParser: MParser[Json, Char] = ˆˆ(
+  def arrayParser: MParser[Char, Json] = ˆˆ(
     skipMany(delimiter) >> char('['),
     many(skipMany(delimiter) >> (stringParser <|> booleanParser <|> numberParser <|> nullParser <|> objectParser <|> arrayParser)),
     skipMany(delimiter) >> char(']')
