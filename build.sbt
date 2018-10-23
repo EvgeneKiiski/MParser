@@ -30,6 +30,13 @@ lazy val examples = (project in file("examples"))
     name := "examples"
   )
 
+lazy val benchmarks = (project in file("benchmarks"))
+  .dependsOn(root, examples)
+  .settings(
+    commonSettings,
+    name := "benchmarks"
+  )
+
 
 
 

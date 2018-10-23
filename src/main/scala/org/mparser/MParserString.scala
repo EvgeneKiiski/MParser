@@ -9,8 +9,11 @@ import util.control.Breaks._
 /**
   * @author Evgenii Kiiski
   */
-trait MParserString {
+private[mparser] trait MParserString {
 
+  /**
+    * parse string token
+    */
   def token(token: String): MParser[Char, String] = MParser { str =>
     var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)
     var current = str
@@ -32,6 +35,9 @@ trait MParserString {
     result
   }
 
+  /**
+    * parse string token case insensitive
+    */
   def tokenCaseInsensitive(token: String): MParser[Char, String] = MParser { str =>
     var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)
     var current = str
@@ -53,6 +59,9 @@ trait MParserString {
     result
   }
 
+  /**
+    * parse quoted string and return string without quotes
+    */
   def quotedString(): MParser[Char, String] = MParser { str =>
     if (str.isEmpty) {
       Left(EmptyStream)

@@ -19,6 +19,9 @@ case class MParser[S, A](run: Stream[S] => Either[MParserError, (A, Stream[S])])
 
   def >>[B](mb: => MParser[S, B]): MParser[S, B] = flatMap(_ => mb)
 
+  /**
+    * Alternative operator, return the first successful parse
+    */
   def <|>(b: => MParser[S, A]): MParser[S, A] = MParser { str =>
     run(str).fold(_ => b.run(str), Right.apply)
   }

@@ -11,7 +11,7 @@ object MParserError {
     override def toString: String = s"Unexpected symbol '$str' tail=$tail"
   }
 
-  object EmptyStream extends MParserError {
+  case object EmptyStream extends MParserError {
     override def toString: String = s"Empty stream"
   }
 

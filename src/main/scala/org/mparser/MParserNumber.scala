@@ -8,9 +8,13 @@ import scala.util.control.NonFatal
 /**
   * @author Evgenii Kiiski
   */
-trait MParserNumber {
+private[mparser] trait MParserNumber {
   this: MParserChar =>
 
+  /**
+    * Parse number to BigDecimal
+    * @param delimiter - decimal separator
+    */
   def number(delimiter: Char = '.'): MParser[Char, BigDecimal] = ˆˆ(
     many1(digit()),
     many(char(delimiter)),

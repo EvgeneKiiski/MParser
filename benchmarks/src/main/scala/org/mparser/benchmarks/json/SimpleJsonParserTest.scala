@@ -1,33 +1,16 @@
-package org.mparser.test
+package org.mparser.benchmarks.json
 
-import org.mparser.MParser
 import org.mparser.MParser._
+import org.mparser.{MParser, MParserError}
+import org.mparser.benchmarks.{Measure, Test}
+import org.mparser.test.SimpleJsonParser
 
+import scala.io.Source
 
 /**
-  * @author Evgenii Kiiski
-  *         It is not a json parser, it is just a example
+  * @author Evgenii Kiiski 
   */
-object SimpleJsonParser extends App {
-
-  val jsonExample =
-    """
-      |{
-      |   "firstName": "Иван",
-      |   "lastName": "Иван\"ов",
-      |   "isDone": true,
-      |   "address": {
-      |       "streetAddress": "Московское ш., 101, кв.101",
-      |       "city": "Ленинград",
-      |       "postalCode": 101101
-      |   },
-      |   "phoneNumbers": [
-      |               "812 123-1234",
-      |               "916 123-4567"
-      |           ]
-      |}
-    """.stripMargin
-
+object SimpleJsonParserTest extends App {
 
   sealed trait Json
 
@@ -84,7 +67,33 @@ object SimpleJsonParser extends App {
     skipMany(delimiter) >> char(']')
   )((_, vs, _) => vs).map(JArray.apply)
 
-  val result = objectParser.run(jsonExample.toStream)
+  val fileContents = Source.fromFile("/Users/evg/work/MParser/benchmarks/data/medium.json").getLines.mkString.toStream
 
-  println(result)
+  val jsonExample =
+    """
+      |{
+      |   "firstName": "Иван",
+      |   "lastName": "Иван\"ов",
+      |   "isDone": true,
+      |   "address": {
+      |       "streetAddress": "Московское ш., 101, кв.101",
+      |       "city": "Ленинград",
+      |       "postalCode": 101101
+      |   },
+      |   "phoneNumbers": [
+      |               "812 123-1234",
+      |               "916 123-4567"
+      |           ]
+      |}
+    """.stripMargin
+
+  val measure =
+    Measure[Stream[Char], Either[MParserError, (Json, Stream[Char])]](objectParser.run, fileContents, _.isRight)
+
+  val test = Test(measure)
+
+  test.run(100)
+
+
+
 }

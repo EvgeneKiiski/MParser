@@ -7,7 +7,7 @@ import scala.collection.mutable
 /**
   * @author Evgenii Kiiski 
   */
-trait MParserCommon {
+private[mparser] trait MParserCommon {
 
   private val leftEmptyStream = Left(MParserError.EmptyStream)
   private val rightEmpty = Right((Seq.empty, Stream.empty))

@@ -3,7 +3,7 @@ package org.mparser
 /**
   * @author Evgenii Kiiski
   */
-trait MParserChar {
+private[mparser] trait MParserChar {
   this: MParserCommon =>
 
   /**
