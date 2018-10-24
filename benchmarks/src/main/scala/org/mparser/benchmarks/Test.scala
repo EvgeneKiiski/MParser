@@ -5,17 +5,16 @@ package org.mparser.benchmarks
   */
 case class Test[A, B](m: Measure[A, B]) {
 
-  def run(n: Integer) = {
+  def run(n: Integer): Seq[Long] = {
     println("start")
-    var values = List.empty[Long]
+    var values = Seq.empty[Long]
     for(i <- 1 to n) {
       println(s"start $i ")
       val r = m.run()
-      println(s"end $i ${r._1} ")
-      values = values :+ r._1
+      println(s"end $i $r ")
+      values = values :+ r
     }
-    val mean = values.sum / n
-    println(s"mean=$mean")
+    values
   }
 
 }

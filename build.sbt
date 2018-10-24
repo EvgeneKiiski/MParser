@@ -34,7 +34,13 @@ lazy val benchmarks = (project in file("benchmarks"))
   .dependsOn(root, examples)
   .settings(
     commonSettings,
-    name := "benchmarks"
+    name := "benchmarks",
+    libraryDependencies ++= Seq(
+      "junit" % "junit" % "4.12" % Test,
+      "org.typelevel" %% "discipline" % "0.10.0" % Test,
+      "org.scalactic" %% "scalactic" % "3.0.5",
+      "org.scalatest" %% "scalatest" % "3.0.5" % Test
+    )
   )
 
 
