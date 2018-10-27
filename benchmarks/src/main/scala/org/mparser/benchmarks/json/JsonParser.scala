@@ -12,17 +12,17 @@ trait JsonParser {
 
   object Json {
 
-    case class JString(value: String) extends Json
+    final case class JString(value: String) extends Json
 
-    case class JBoolean(value: Boolean) extends Json
+    final case class JBoolean(value: Boolean) extends Json
 
-    case class JNumber(value: BigDecimal) extends Json
+    final case class JNumber(value: BigDecimal) extends Json
 
-    case object JNull extends Json
+    final case object JNull extends Json
 
-    case class JObject(value: Map[String, Json]) extends Json
+    final case class JObject(value: Map[String, Json]) extends Json
 
-    case class JArray(value: Seq[Json]) extends Json
+    final case class JArray(value: Seq[Json]) extends Json
 
   }
 
@@ -43,7 +43,7 @@ trait JsonParser {
   val nullParser: MParser[Char, Json] = tokenCaseInsensitive("null").`$>`(JNull)
 
   def anyJsonParser: MParser[Char, Json] =
-    stringParser <|> booleanParser <|> numberParser <|> nullParser <|> objectParser <|> arrayParser
+    stringParser <|> numberParser <|> nullParser <|> booleanParser <|> objectParser <|> arrayParser
 
   def keyValueParser: MParser[Char, (String, Json)] = ˆˆ(
     skipMany(delimiter) >> key,
@@ -53,7 +53,7 @@ trait JsonParser {
 
   def objectParser: MParser[Char, Json] = ˆˆ(
     skipMany(delimiter) >> char('{'),
-    many1(keyValueParser),
+    many(keyValueParser),
     skipMany(delimiter) >> char('}')
   )((_, vs, _) => vs).map(_.toMap).map(JObject.apply)
 

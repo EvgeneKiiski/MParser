@@ -1,16 +1,16 @@
 # MParser
 
-MParser is simple parser has monadic structure.
+MParser is simple parser com combinator.
 
 ## Getting MParser
 
-The current stable version is 0.0.1.
+The current stable version is 0.0.2.
 
 If you're using SBT, add the following line to your build file:
 
 ```scala
 resolvers += "MParser.org" at "http://repository.mparser.org/"
-libraryDependencies += "org.mparser" %% "mparser" % "0.0.1"
+libraryDependencies += "org.mparser" %% "mparser" % "0.0.2"
 ```
 
 ## Quick Start
@@ -34,8 +34,6 @@ println(result)
 ```
 
 ## Resources
-
-The [docs](http://mparser.org/).
 
 The [Scaladocs](http://scaladoc.mparser.org/).
 

@@ -15,7 +15,7 @@ private[mparser] trait MParserNumber {
     * Parse number to BigDecimal
     * @param delimiter - decimal separator
     */
-  def number(delimiter: Char = '.'): MParser[Char, BigDecimal] = ˆˆ(
+  final def number(delimiter: Char = '.'): MParser[Char, BigDecimal] = ˆˆ(
     many1(digit()),
     many(char(delimiter)),
     many(digit())

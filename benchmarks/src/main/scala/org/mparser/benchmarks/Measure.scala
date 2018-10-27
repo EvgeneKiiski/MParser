@@ -3,9 +3,7 @@ package org.mparser.benchmarks
 /**
   * @author Evgenii Kiiski 
   */
-case class Measure[A, B](test: A => B, a: A, resultChecker: B => Boolean) {
-
-  val count = 100
+case class Measure[A, B](name: String, count: Int,  test: A => B, a: A, resultChecker: B => Boolean) {
 
   def run(): Long= {
     val start = System.nanoTime()

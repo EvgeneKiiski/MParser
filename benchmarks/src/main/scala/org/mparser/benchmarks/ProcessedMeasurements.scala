@@ -1,6 +1,6 @@
 package org.mparser.benchmarks
 
-import scala.math.sqrt
+import scala.math._
 
 /**
   * @author Evgenii Kiiski 
@@ -11,8 +11,9 @@ case class ProcessedMeasurements(
                                   deviation: Double
                                 ) {
   override def toString: String = {
-    val delta = deviation / mean * 100
-    s"$name = $mean ± $delta %"
+    val delta = round (deviation / 1000)
+    val meanMicrosecond = round(mean / 1000)
+    s"$name = $meanMicrosecond μs ± $delta"
   }
 }
 

@@ -14,7 +14,7 @@ private[mparser] trait MParserString {
   /**
     * parse string token
     */
-  def token(token: String): MParser[Char, String] = MParser { str =>
+  final def token(token: String): MParser[Char, String] = MParser { str =>
     var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)
     var current = str
     breakable {
@@ -38,7 +38,7 @@ private[mparser] trait MParserString {
   /**
     * parse string token case insensitive
     */
-  def tokenCaseInsensitive(token: String): MParser[Char, String] = MParser { str =>
+  final def tokenCaseInsensitive(token: String): MParser[Char, String] = MParser { str =>
     var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)
     var current = str
     breakable {
@@ -62,7 +62,7 @@ private[mparser] trait MParserString {
   /**
     * parse quoted string and return string without quotes
     */
-  def quotedString(): MParser[Char, String] = MParser { str =>
+  final def quotedString(): MParser[Char, String] = MParser { str =>
     if (str.isEmpty) {
       Left(EmptyStream)
     } else if (str.head != '"') {
