@@ -30,6 +30,9 @@ trait JsonParser {
 
   val delimiter = oneOf(' ', ',', '\n', '\r')
 
+  //val manyDelimiters = skipMany(delimiter)
+  val manyDelimiters = skipManyOneOf(' ', ',', '\n', '\r')
+
   val key = quotedString()
 
   val stringParser: MParser[Char, Json] = quotedString().map(JString.apply)
@@ -42,25 +45,25 @@ trait JsonParser {
 
   val nullParser: MParser[Char, Json] = tokenCaseInsensitive("null").`$>`(JNull)
 
-  def anyJsonParser: MParser[Char, Json] =
-    stringParser <|> numberParser <|> nullParser <|> booleanParser <|> objectParser <|> arrayParser
+  lazy val anyJsonParser: MParser[Char, Json] = manyDelimiters >>
+    (stringParser <|> numberParser <|> nullParser <|> booleanParser <|> objectParser <|> arrayParser)
 
-  def keyValueParser: MParser[Char, (String, Json)] = ˆˆ(
-    skipMany(delimiter) >> key,
-    skipMany(delimiter) >> char(':') >> skipMany(delimiter),
+  lazy val keyValueParser: MParser[Char, (String, Json)] = manyDelimiters >> ˆˆ(
+    key,
+    manyDelimiters >> char(':'),
     anyJsonParser
   )((k, _, v) => k -> v)
 
-  def objectParser: MParser[Char, Json] = ˆˆ(
-    skipMany(delimiter) >> char('{'),
+  lazy val objectParser: MParser[Char, Json] = manyDelimiters >> ˆˆ(
+    char('{'),
     many(keyValueParser),
-    skipMany(delimiter) >> char('}')
+    manyDelimiters >> char('}')
   )((_, vs, _) => vs).map(_.toMap).map(JObject.apply)
 
-  def arrayParser: MParser[Char, Json] = ˆˆ(
-    skipMany(delimiter) >> char('['),
-    many(skipMany(delimiter) >> anyJsonParser),
-    skipMany(delimiter) >> char(']')
+  lazy val  arrayParser: MParser[Char, Json] = ˆˆ(
+    char('['),
+    many(anyJsonParser),
+    manyDelimiters >> char(']')
   )((_, vs, _) => vs).map(JArray.apply)
 
 }

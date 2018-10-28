@@ -1,15 +1,13 @@
 package org.mparser
 
 
-case class MParser[S, A](run: Stream[S] => Either[MParserError, (A, Stream[S])]) extends AnyVal {
+class MParser[S, A](val run: Stream[S] => Either[MParserError, (A, Stream[S])]) extends AnyVal {
 
   def map[B](f: A => B): MParser[S, B] = MParser { str =>
     run(str).map { case (a, tail) => (f(a), tail) }
   }
 
-  def `$>`[B](b: B): MParser[S, B] = MParser { str =>
-    run(str).map { case (_, tail) => (b, tail) }
-  }
+  def `$>`[B](b: B): MParser[S, B] = map(_ => b)
 
   def flatMap[B](f: A => MParser[S, B]): MParser[S, B] = MParser { str =>
     run(str).fold(Left.apply, { case (a, tail) => f(a).run(tail) })
@@ -23,7 +21,13 @@ case class MParser[S, A](run: Stream[S] => Either[MParserError, (A, Stream[S])])
     * Alternative operator, return the first successful parse
     */
   def <|>(b: => MParser[S, A]): MParser[S, A] = MParser { str =>
-    run(str).fold(_ => b.run(str), Right.apply)
+    val result = run(str)
+    if(result.isRight) {
+      result
+    } else {
+      b.run(str)
+    }
+    //run(str).fold(_ => b.run(str), Right.apply)
   }
 
   def handleError(f: MParserError => MParser[S, A]): MParser[S, A] = MParser { str =>
@@ -54,11 +58,11 @@ object MParser
     with MParserString
     with MParserOps {
 
-  def apply[S, A](run: Stream[S] => Either[MParserError, (A, Stream[S])]): MParser[S, A] = new MParser(run)
+  final def apply[S, A](run: Stream[S] => Either[MParserError, (A, Stream[S])]): MParser[S, A] = new MParser(run)
 
-  def pure[S, A](a: => A): MParser[S, A] = MParser(s => Right((a, s)))
+  final def pure[S, A](a: => A): MParser[S, A] = MParser(s => Right((a, s)))
 
-  def raiseError[S, A](e: MParserError): MParser[S, A] = MParser(_ => Left(e))
+  final def raiseError[S, A](e: MParserError): MParser[S, A] = MParser(_ => Left(e))
 
 }
 

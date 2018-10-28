@@ -108,9 +108,88 @@ private[mparser] trait MParserCommon {
     var current = str
     var continue = true
     while (continue && current.nonEmpty) {
-      p.run(current) match {
-        case Left(_) => continue = false
-        case Right((_, tail)) => current = tail
+      val result = p.run(current)
+      if(result.isLeft) {
+        continue = false
+      } else {
+        current = result.asInstanceOf[Right[MParserError, (S, Stream[S])]].value._2
+      }
+//      p.run(current) match {
+//        case Left(_) => continue = false
+//        case Right((_, tail)) => current = tail
+//      }
+    }
+    Right((Seq.empty, current))
+  }
+
+  /**
+    * skipManyOneOf skip many of any t.
+    */
+  final def skipManyOneOf[S, A](t0: S): MParser[S, Seq[A]] = MParser { str =>
+    var current = str
+    var continue = true
+    while (continue && current.nonEmpty) {
+      current.headOption match {
+        case Some(s) if t0 == s =>
+          current = current.tail
+        case _ =>
+          continue = false
+      }
+    }
+    Right((Seq.empty, current))
+  }
+
+  final def skipManyOneOf[S, A](t0: S, t1: S): MParser[S, Seq[A]] = MParser { str =>
+    var current = str
+    var continue = true
+    while (continue && current.nonEmpty) {
+      current.headOption match {
+        case Some(s) if t0 == s || t1 == s =>
+          current = current.tail
+        case _ =>
+          continue = false
+      }
+    }
+    Right((Seq.empty, current))
+  }
+
+  final def skipManyOneOf[S, A](t0: S, t1: S, t2: S): MParser[S, Seq[A]] = MParser { str =>
+    var current = str
+    var continue = true
+    while (continue && current.nonEmpty) {
+      current.headOption match {
+        case Some(s) if t0 == s || t1 == s || t2 == s  =>
+          current = current.tail
+        case _ =>
+          continue = false
+      }
+    }
+    Right((Seq.empty, current))
+  }
+
+  final def skipManyOneOf[S, A](t0: S, t1: S, t2: S, t3: S): MParser[S, Seq[A]] = MParser { str =>
+    var current = str
+    var continue = true
+    while (continue && current.nonEmpty) {
+      current.headOption match {
+        case Some(s) if t0 == s || t1 == s || t2 == s || t3 == s =>
+          current = current.tail
+        case _ =>
+          continue = false
+      }
+    }
+    Right((Seq.empty, current))
+  }
+
+  final def skipManyOneOf[S, A](t0: S, t1: S, t2: S, t3: S, ts: S*): MParser[S, Seq[A]] = MParser { str =>
+    var current = str
+    var continue = true
+    while (continue && current.nonEmpty) {
+      current.headOption match {
+        case Some(s) if t0 == s || t1 == s || t2 == s || t3 == s || ts.contains(s) =>
+          current = current.tail
+        case _ =>
+          continue = false
       }
     }
     Right((Seq.empty, current))

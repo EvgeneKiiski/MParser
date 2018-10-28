@@ -34,8 +34,8 @@ object SimpleJsonParserTest extends App with JsonParser with JsonExamples {
 
   val circeBig = Measure[String, Either[ParsingFailure, circe.Json]]("Circe big json", measuresCountBig, parse, bigJson, _.isRight)
 
-  val test = Test(mParserSmall, mParserMedium,
-   mParserBig, circeSmall, circeMedium, circeBig)
+  //val test = Test(mParserSmall, mParserMedium)
+  val test = Test(mParserSmall, mParserMedium, mParserBig, circeSmall, circeMedium, circeBig)
 
   val result = test.run(countTests)
 
