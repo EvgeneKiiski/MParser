@@ -2,35 +2,18 @@ package org.mparser.benchmarks.json
 
 import org.mparser.MParser
 import org.mparser.MParser._
+import org.openjdk.jmh.annotations.{Scope, State}
 
 /**
   * @author Evgenii Kiiski 
   */
-trait JsonParser {
-
-  sealed trait Json
-
-  object Json {
-
-    final case class JString(value: String) extends Json
-
-    final case class JBoolean(value: Boolean) extends Json
-
-    final case class JNumber(value: BigDecimal) extends Json
-
-    final case object JNull extends Json
-
-    final case class JObject(value: Map[String, Json]) extends Json
-
-    final case class JArray(value: Seq[Json]) extends Json
-
-  }
+@State(Scope.Benchmark)
+abstract class JsonParser {
 
   import Json._
 
   val delimiter = oneOf(' ', ',', '\n', '\r')
 
-  //val manyDelimiters = skipMany(delimiter)
   val manyDelimiters = skipManyOneOf(' ', ',', '\n', '\r')
 
   val key = quotedString()

@@ -1,11 +1,14 @@
 package org.mparser.benchmarks.json
 
+import org.openjdk.jmh.annotations.{Scope, State}
+
 import scala.io.Source
 
 /**
   * @author Evgenii Kiiski 
   */
-trait JsonExamples {
+@State(Scope.Benchmark)
+object Examples {
 
   val smallJson =
     """
@@ -28,6 +31,5 @@ trait JsonExamples {
   val mediumJson = Source.fromFile("/Users/evg/work/MParser/benchmarks/data/medium.json").getLines.mkString
 
   val bigJson = Source.fromFile("/Users/evg/work/MParser/benchmarks/data/citm_catalog.json").getLines.mkString
-
 
 }

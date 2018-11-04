@@ -31,6 +31,7 @@ lazy val examples = (project in file("examples"))
   )
 
 lazy val benchmarks = (project in file("benchmarks"))
+  .enablePlugins(JmhPlugin)
   .dependsOn(root, examples)
   .settings(
     commonSettings,
@@ -45,6 +46,8 @@ lazy val benchmarks = (project in file("benchmarks"))
       "org.scalatest" %% "scalatest" % "3.0.5" % Test
     )
   )
+
+
 
 
 

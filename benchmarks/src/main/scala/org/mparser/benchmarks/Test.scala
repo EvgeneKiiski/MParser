@@ -1,9 +1,8 @@
 package org.mparser.benchmarks
 
-import org.mparser.benchmarks.json.SimpleJsonParserTest.{countTests, test}
 
 /**
-  * @author Evgenii Kiiski 
+  * @author Evgenii Kiiski
   */
 case class Test(ms: Measure[_, _]*) {
 

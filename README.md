@@ -1,6 +1,6 @@
 # MParser
 
-MParser is simple parser com combinator.
+MParser is simple parser combinator.
 
 ## Getting MParser
 
