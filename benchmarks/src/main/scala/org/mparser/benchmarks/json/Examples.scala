@@ -10,7 +10,7 @@ import scala.io.Source
 @State(Scope.Benchmark)
 object Examples {
 
-  val smallJson =
+  val smallJson: String =
     """
       |{
       |   "firstName": "Иван",
@@ -28,8 +28,8 @@ object Examples {
       |}
     """.stripMargin
 
-  val mediumJson = Source.fromFile("/Users/evg/work/MParser/benchmarks/data/medium.json").getLines.mkString
+  val mediumJson: String = Source.fromFile("/Users/evg/work/MParser/benchmarks/data/medium.json").getLines.mkString
 
-  val bigJson = Source.fromFile("/Users/evg/work/MParser/benchmarks/data/citm_catalog.json").getLines.mkString
+  val bigJson: String = Source.fromFile("/Users/evg/work/MParser/benchmarks/data/citm_catalog.json").getLines.mkString
 
 }

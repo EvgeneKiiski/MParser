@@ -3,6 +3,7 @@ package org.mparser
 import org.mparser.MParserError.EmptyStream
 
 import scala.collection.mutable
+import scala.util.control.{BreakControl, ControlThrowable}
 import util.control.Breaks._
 
 /**
@@ -23,21 +24,18 @@ private[mparser] trait MParserCommon {
     * The parser satisfy f succeeds for any value for which the supplied function f returns True. Returns the value that is actually parsed
     */
   final def satisfy[S](ch: S => Boolean): MParser[S, S] = MParser { str =>
-//    var result: Either[MParserError, (S, Stream[S])] = leftEmptyStream
-//    breakable {
-//      for (s <- str) {
-//        if (ch(s))
-//          result = Right((s, str.tail))
-//        else
-//          result = Left(MParserError.UnexpectedSymbol(s, str.tail))
-//        break
-//      }
-//    }
-//    result
-    str.headOption.map {
-      case s if ch(s) => Right((s, str.tail))
-      case s => Left(MParserError.UnexpectedSymbol(s, str.tail))
-    }.getOrElse(leftEmptyStream)
+    //    str.headOption.map {
+    //      case s if ch(s) => Right((s, str.tail))
+    //      case s => Left(MParserError.UnexpectedSymbol(s, str.tail))
+    //    }.getOrElse(leftEmptyStream)
+    //
+    try {
+      val head = str.head
+      if (ch(head)) Right((head, str.tail))
+      else Left(MParserError.UnexpectedSymbol(head, str.tail))
+    } catch {
+      case _: NoSuchElementException => leftEmptyStream
+    }
   }
 
   /**
@@ -75,9 +73,6 @@ private[mparser] trait MParserCommon {
     * many1 p applies the parser p one or more times. Returns a list of the returned values of p.
     */
   final def many1[S, A](p: MParser[S, A]): MParser[S, Seq[A]] = MParser { str =>
-    if (str.isEmpty) {
-      leftEmptyStream
-    } else {
       var current = str
       var builder: mutable.Builder[A, Seq[A]] = Seq.newBuilder[A]
       var result: Either[MParserError, (Seq[A], Stream[S])] = Left(MParserError.EmptyStream)
@@ -98,7 +93,6 @@ private[mparser] trait MParserCommon {
         }
       }
       result
-    }
   }
 
   /**
@@ -109,15 +103,11 @@ private[mparser] trait MParserCommon {
     var continue = true
     while (continue && current.nonEmpty) {
       val result = p.run(current)
-      if(result.isLeft) {
+      if (result.isLeft) {
         continue = false
       } else {
         current = result.asInstanceOf[Right[MParserError, (S, Stream[S])]].value._2
       }
-//      p.run(current) match {
-//        case Left(_) => continue = false
-//        case Right((_, tail)) => current = tail
-//      }
     }
     Right((Seq.empty, current))
   }
@@ -129,8 +119,8 @@ private[mparser] trait MParserCommon {
     var current = str
     var continue = true
     while (continue && current.nonEmpty) {
-      current.headOption match {
-        case Some(s) if t0 == s =>
+      current.head match {
+        case s if t0 == s =>
           current = current.tail
         case _ =>
           continue = false
@@ -143,8 +133,8 @@ private[mparser] trait MParserCommon {
     var current = str
     var continue = true
     while (continue && current.nonEmpty) {
-      current.headOption match {
-        case Some(s) if t0 == s || t1 == s =>
+      current.head match {
+        case s if t0 == s || t1 == s =>
           current = current.tail
         case _ =>
           continue = false
@@ -157,8 +147,8 @@ private[mparser] trait MParserCommon {
     var current = str
     var continue = true
     while (continue && current.nonEmpty) {
-      current.headOption match {
-        case Some(s) if t0 == s || t1 == s || t2 == s  =>
+      current.head match {
+        case s if t0 == s || t1 == s || t2 == s =>
           current = current.tail
         case _ =>
           continue = false
@@ -169,14 +159,18 @@ private[mparser] trait MParserCommon {
 
   final def skipManyOneOf[S, A](t0: S, t1: S, t2: S, t3: S): MParser[S, Seq[A]] = MParser { str =>
     var current = str
-    var continue = true
-    while (continue && current.nonEmpty) {
-      current.headOption match {
-        case Some(s) if t0 == s || t1 == s || t2 == s || t3 == s =>
-          current = current.tail
-        case _ =>
-          continue = false
+    try {
+      while (true) {
+        current.head match {
+          case s if t0 == s || t1 == s || t2 == s || t3 == s =>
+            current = current.tail
+          case _ =>
+            break
+        }
       }
+    } catch {
+      case _: NoSuchElementException =>
+      case _: ControlThrowable =>
     }
     Right((Seq.empty, current))
   }
@@ -185,8 +179,8 @@ private[mparser] trait MParserCommon {
     var current = str
     var continue = true
     while (continue && current.nonEmpty) {
-      current.headOption match {
-        case Some(s) if t0 == s || t1 == s || t2 == s || t3 == s || ts.contains(s) =>
+      current.head match {
+        case s if t0 == s || t1 == s || t2 == s || t3 == s || ts.contains(s) =>
           current = current.tail
         case _ =>
           continue = false

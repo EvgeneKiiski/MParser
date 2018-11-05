@@ -11,24 +11,29 @@ import util.control.Breaks._
   */
 private[mparser] trait MParserString {
 
+  private val leftEmpty = Left(EmptyStream)
+
   /**
     * parse string token
     */
   final def token(token: String): MParser[Char, String] = MParser { str =>
-    var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)
+    var result: Either[MParserError, (String, Stream[Char])] = leftEmpty
     var current = str
     breakable {
-      for (ch <- token) {
-        current.headOption match {
-          case Some(c) if ch == c =>
-            current = current.tail
-          case Some(c) =>
-            result = Left(UnexpectedSymbol(c, str.tail))
-            break
-          case None =>
-            result = Left(EmptyStream)
-            break
+      try {
+        for (ch <- token) {
+          current.head match {
+            case c if ch == c =>
+              current = current.tail
+            case c =>
+              result = Left(UnexpectedSymbol(c, str.tail))
+              break
+          }
         }
+      } catch {
+        case _: NoSuchElementException =>
+          result = leftEmpty
+          break
       }
       result = Right(token, current)
     }
@@ -39,20 +44,23 @@ private[mparser] trait MParserString {
     * parse string token case insensitive
     */
   final def tokenCaseInsensitive(token: String): MParser[Char, String] = MParser { str =>
-    var result: Either[MParserError, (String, Stream[Char])] = Left(EmptyStream)
+    var result: Either[MParserError, (String, Stream[Char])] = leftEmpty
     var current = str
     breakable {
-      for (ch <- token) {
-        current.headOption match {
-          case Some(c) if ch.toLower == c.toLower =>
-            current = current.tail
-          case Some(c) =>
-            result = Left(UnexpectedSymbol(c, str.tail))
-            break
-          case None =>
-            result = Left(EmptyStream)
-            break
+      try {
+        for (ch <- token) {
+          current.head match {
+            case c if ch == c || ch.toLower == c.toLower =>
+              current = current.tail
+            case c =>
+              result = Left(UnexpectedSymbol(c, str.tail))
+              break
+          }
         }
+      } catch {
+        case _: NoSuchElementException =>
+          result = leftEmpty
+          break
       }
       result = Right(token, current)
     }
@@ -64,7 +72,7 @@ private[mparser] trait MParserString {
     */
   final def quotedString(): MParser[Char, String] = MParser { str =>
     if (str.isEmpty) {
-      Left(EmptyStream)
+      leftEmpty
     } else if (str.head != '"') {
       Left(UnexpectedSymbol(str.head, str.tail))
     } else {
