@@ -4,13 +4,13 @@ MParser is simple parser combinator.
 
 ## Getting MParser
 
-The current stable version is 0.0.2.
+The current stable version is 0.0.3.
 
 If you're using SBT, add the following line to your build file:
 
 ```scala
 resolvers += "MParser.org" at "http://repository.mparser.org/"
-libraryDependencies += "org.mparser" %% "mparser" % "0.0.2"
+libraryDependencies += "org.mparser" %% "mparser" % "0.0.3"
 ```
 
 ## Quick Start
