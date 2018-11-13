@@ -27,6 +27,40 @@ class MParserTest extends WordSpec with ParallelTestExecution with Matchers {
     }
   }
 
+  "MParser.exactly" should {
+    "parse empty string" in {
+      val str = ""
+      MParser.exactly('a').run(str.toStream) shouldEqual Left(EmptyStream)
+    }
+    "parse string aaaBBB" in {
+      val str = "aaaBBB"
+      MParser.exactly('a').run(str.toStream) shouldEqual Right(('a', Stream('a', 'a', 'B', 'B', 'B')))
+    }
+    "parse string BBB" in {
+      val str = "BBB"
+      MParser.exactly('a').run(str.toStream).isLeft shouldEqual true
+    }
+  }
+
+  "MParser.maybeOne" should {
+    "parse empty string" in {
+      val str = ""
+      maybeOne(anyParser).run(str.toStream) shouldEqual Right((None, Stream.empty))
+    }
+    "parse string aaaBBB" in {
+      val str = "aaaBBB"
+      maybeOne(abcParser).run(str.toStream) shouldEqual Right((Some('a'), Stream('a', 'a', 'B', 'B', 'B')))
+    }
+    "parse string BBB" in {
+      val str = "BBB"
+      maybeOne(abcParser).run(str.toStream) shouldEqual Right((None, Stream('B', 'B', 'B')))
+    }
+    "parse string aaa" in {
+      val str = "a"
+      maybeOne(abcParser).run(str.toStream) shouldEqual Right((Some('a'), Stream.empty))
+    }
+  }
+
   "MParser.many" should {
     "parse empty string" in {
       val str = ""

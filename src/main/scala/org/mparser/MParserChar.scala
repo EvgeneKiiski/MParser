@@ -55,7 +55,7 @@ private[mparser] trait MParserChar {
   /**
     * char
     */
-  final def char(c: Char): MParser[Char, Char] = satisfy(_ == c)
+  final def char(c: Char): MParser[Char, Char] = exactly(c)
 
 
 }

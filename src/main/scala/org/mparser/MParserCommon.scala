@@ -21,17 +21,26 @@ private[mparser] trait MParserCommon {
   }
 
   /**
-    * The parser satisfy f succeeds for any value for which the supplied function f returns True. Returns the value that is actually parsed
+    * The parser satisfy f succeeds for any value for which the supplied function f returns True.
+    * Returns the value that is actually parsed
     */
-  final def satisfy[S](ch: S => Boolean): MParser[S, S] = MParser { str =>
-    //    str.headOption.map {
-    //      case s if ch(s) => Right((s, str.tail))
-    //      case s => Left(MParserError.UnexpectedSymbol(s, str.tail))
-    //    }.getOrElse(leftEmptyStream)
-    //
+  final def satisfy[S](f: S => Boolean): MParser[S, S] = MParser { str =>
     try {
       val head = str.head
-      if (ch(head)) Right((head, str.tail))
+      if (f(head)) Right((head, str.tail))
+      else Left(MParserError.UnexpectedSymbol(head, str.tail))
+    } catch {
+      case _: NoSuchElementException => leftEmptyStream
+    }
+  }
+
+  /**
+    * The parser succeeds for value
+    */
+  final def exactly[S](value: S): MParser[S, S] = MParser { str =>
+    try {
+      val head = str.head
+      if (value == head) Right((head, str.tail))
       else Left(MParserError.UnexpectedSymbol(head, str.tail))
     } catch {
       case _: NoSuchElementException => leftEmptyStream
@@ -44,9 +53,22 @@ private[mparser] trait MParserCommon {
   final def oneOf[S](t: S*): MParser[S, S] = satisfy((ch: S) => t.contains(ch))
 
   /**
-    * As the dual of oneOf, noneOf cs succeeds if the current value not in the supplied list of values t. Returns the parsed character.
+    * As the dual of oneOf, noneOf cs succeeds if the current value not in the supplied list of values t.
+    * Returns the parsed character.
     */
   final def noneOf[S](t: S*): MParser[S, S] = satisfy((ch: S) => !t.contains(ch))
+
+  /**
+    * maybeOne p applies the parser p zero or one time.
+    */
+  final def maybeOne[S, A](p: MParser[S, A]): MParser[S, Option[A]] = MParser { str =>
+    p.run(str) match {
+      case Left(_) =>
+        Right((None, str))
+      case Right((v, tail)) =>
+        Right((Some(v), tail))
+    }
+  }
 
 
   /**

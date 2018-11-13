@@ -17,21 +17,7 @@ private[mparser] trait MParserNumber {
     *
     * @param delimiter - decimal separator
     */
-  final def number(delimiter: Char = '.'): MParser[Char, BigDecimal] =
-//      ˆˆ(
-//      many1(digit()),
-//      many(char(delimiter)),
-//      many(digit())
-//    )((a, b, c) => (a ++ b ++ c).mkString)
-//      .flatMap { s =>
-//        try {
-//          pure(BigDecimal(s))
-//        } catch {
-//          case NonFatal(e) => raiseError[Char, BigDecimal](CustomError(e))
-//        }
-//      }
-  // just test
-    MParser { str =>
+  final def number(delimiter: Char = '.'): MParser[Char, BigDecimal] = MParser { str =>
       var current = str
       var builder = new mutable.StringBuilder()
       var continue = true

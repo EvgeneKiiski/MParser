@@ -5,7 +5,7 @@ logBuffered in Test := false
 
 lazy val commonSettings = Seq(
   organization := "org.mparser",
-  version := "0.0.3-SNAPSHOT",
+  version := "0.0.3",
   scalaVersion := "2.12.7"
 )
 
@@ -16,7 +16,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "junit" % "junit" % "4.12" % Test,
       "org.typelevel" %% "discipline" % "0.10.0" % Test,
-      "org.scalactic" %% "scalactic" % "3.0.5",
+      "org.scalactic" %% "scalactic" % "3.0.5"  % Test,
       "org.scalatest" %% "scalatest" % "3.0.5" % Test
     ),
     publishTo := Some(Resolver.file("file",  new File( "/Users/evg/work/mparser.org/repository" )) )
