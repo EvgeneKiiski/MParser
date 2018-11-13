@@ -1,6 +1,6 @@
 # MParser
 
-MParser is simple parser combinator.
+MParser is simple scala parser combinator.
 
 ## Getting MParser
 
