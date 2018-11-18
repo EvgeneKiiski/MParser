@@ -49,6 +49,11 @@ class MParser[S, A](val run: Stream[S] => Either[MParserError, (A, Stream[S])]) 
   def apply3[B, C, D](fb: MParser[S, B])(fc: MParser[S, C])(f: (A, B, C) => D): MParser[S, D] =
     tuple2(fb).apply2(fc)((ab, c) => f(ab._1, ab._2, c))
 
+  def toOption(str: Stream[S]) : Option[A] = run(str) match {
+    case Right((a, tail)) if tail.isEmpty => Some(a)
+    case Left(_) => None
+  }
+
 }
 
 object MParser

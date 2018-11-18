@@ -17,7 +17,7 @@ private[mparser] trait MParserString {
     * parse string token
     */
   final def token(token: String): MParser[Char, String] = MParser { str =>
-    var result: Either[MParserError, (String, Stream[Char])] = leftEmpty
+    var result: Either[MParserError, (String, Stream[Char])] = _
     var current = str
     breakable {
       try {
@@ -44,7 +44,7 @@ private[mparser] trait MParserString {
     * parse string token case insensitive
     */
   final def tokenCaseInsensitive(token: String): MParser[Char, String] = MParser { str =>
-    var result: Either[MParserError, (String, Stream[Char])] = leftEmpty
+    var result: Either[MParserError, (String, Stream[Char])] = _
     var current = str
     breakable {
       try {

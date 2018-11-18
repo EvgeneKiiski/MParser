@@ -19,7 +19,7 @@ object SimpleJsonParserTest extends JsonParser {
 
     val countTests = 100
     val measuresCount = 1000
-    val measuresCountBig = 5
+    val measuresCountBig = 100
 
 
     val mParserSmall =

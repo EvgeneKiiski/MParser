@@ -47,7 +47,7 @@ private[mparser] trait MParserOps {
     }
   }
 
-  def ˆˆˆ[A, B, C, D, E, F, S](fa: MParser[S, A], fb: MParser[S, B], fc: MParser[S, C], fd: MParser[S, D], fe: MParser[S, E])
+  def ˆˆˆˆ[A, B, C, D, E, F, S](fa: MParser[S, A], fb: MParser[S, B], fc: MParser[S, C], fd: MParser[S, D], fe: MParser[S, E])
                               (f: (A, B, C, D, E) => F): MParser[S, F] = MParser { str =>
     fa.run(str) match {
       case Right((a, at)) => fb.run(at) match {
