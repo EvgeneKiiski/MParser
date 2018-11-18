@@ -97,7 +97,7 @@ private[mparser] trait MParserCommon {
   final def many1[S, A](p: MParser[S, A]): MParser[S, Seq[A]] = MParser { str =>
       var current = str
       var builder: mutable.Builder[A, Seq[A]] = Seq.newBuilder[A]
-      var result: Either[MParserError, (Seq[A], Stream[S])] = Left(MParserError.EmptyStream)
+      var result: Either[MParserError, (Seq[A], Stream[S])] = null
       var continue = true
       while (continue) {
         p.run(current) match {
