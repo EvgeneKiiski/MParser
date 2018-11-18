@@ -51,7 +51,6 @@ private[mparser] trait MParserChar {
     */
   final def spaceChar(): MParser[Char, Char] = satisfy(_.isSpaceChar)
 
-
   /**
     * char
     */
