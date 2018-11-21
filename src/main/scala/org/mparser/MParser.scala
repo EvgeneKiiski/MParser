@@ -51,7 +51,7 @@ class MParser[S, A](val run: Stream[S] => Either[MParserError, (A, Stream[S])]) 
 
   def toOption(str: Stream[S]) : Option[A] = run(str) match {
     case Right((a, tail)) if tail.isEmpty => Some(a)
-    case Left(_) => None
+    case _ => None
   }
 
 }
