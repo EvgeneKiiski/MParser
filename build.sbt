@@ -5,7 +5,7 @@ logBuffered in Test := false
 
 lazy val commonSettings = Seq(
   organization := "org.mparser",
-  version := "0.0.5-s",
+  version := "0.0.6-s",
   scalaVersion := "2.12.7"
 )
 
