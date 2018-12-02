@@ -11,15 +11,11 @@ class MParserCompiler[A] {
 
   final def `$>`[B](b: B): MParserCompiler[B] = map(_ => b)
 
-  final def flatMap[B](f: A => MParserCompiler[B]): MParserCompiler[B] = FlatMapped(this, f)
-
-  final def >>=[B](f: A => MParserCompiler[B]): MParserCompiler[B] = flatMap(f)
-
-  final def >>[B](mb: => MParserCompiler[B]): MParserCompiler[B] = flatMap(_ => mb)
+  final def >>[B](mb: => MParserCompiler[B]): MParserCompiler[B] = Apply2[A, B, B](this, mb, (_, b) => b)
 
   final def <|>(b: => MParserCompiler[A]): MParserCompiler[A] = Alternative(this, Seq(() => b))
 
-  final def ap[B](f: => MParserCompiler[A => B]): MParserCompiler[B] = f.flatMap(this.map)
+  final def ap[B](f: => MParserCompiler[A => B]): MParserCompiler[B] = Apply2[A, A => B, B](this, f, (a, ab) => ab(a))
 
   final def ap2[B, C](fb: MParserCompiler[B])(f: => MParserCompiler[(A, B) => C]): MParserCompiler[C] =
     fb.ap(ap(f.map(_.curried)))
@@ -36,13 +32,9 @@ class MParserCompiler[A] {
 
 object MParserCompiler {
 
-  //final private[compiler] case class Pure[A](a: A) extends MParserCompiler[A]
-
   final private[compiler] case class Suspend[A](a: MParserCommands[A]) extends MParserCompiler[A]
 
   final private[compiler] case class Mapped[B, C](c: MParserCompiler[C], f: C => B) extends MParserCompiler[B]
-
-  final private[compiler] case class FlatMapped[B, C](c: MParserCompiler[C], f: C => MParserCompiler[B]) extends MParserCompiler[B]
 
   final private[compiler] case class Alternative[A](a: MParserCompiler[A], bs: Seq[() => MParserCompiler[A]]) extends MParserCompiler[A]
 
