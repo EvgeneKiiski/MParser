@@ -7,15 +7,13 @@ class MParser[S, A](val run: Stream[S] => Either[MParserError, (A, Stream[S])]) 
     run(str).map { case (a, tail) => (f(a), tail) }
   }
 
-  def `$>`[B](b: B): MParser[S, B] = map(_ => b)
-
-  def flatMap[B](f: A => MParser[S, B]): MParser[S, B] = MParser { str =>
-    run(str).fold(Left.apply, { case (a, tail) => f(a).run(tail) })
+  def `$>`[B](b: B): MParser[S, B] = MParser { str =>
+    run(str).map { case (_, tail) => (b, tail) }
   }
 
-  def >>=[B](f: A => MParser[S, B]): MParser[S, B] = flatMap(f)
-
-  def >>[B](mb: => MParser[S, B]): MParser[S, B] = flatMap(_ => mb)
+  def >>[B](mb: => MParser[S, B]): MParser[S, B] = MParser { str =>
+    run(str).fold(Left.apply, { case (_, tail) => mb.run(tail) })
+  }
 
   /**
     * Alternative operator, return the first successful parse
@@ -27,7 +25,6 @@ class MParser[S, A](val run: Stream[S] => Either[MParserError, (A, Stream[S])]) 
     } else {
       b.run(str)
     }
-    //run(str).fold(_ => b.run(str), Right.apply)
   }
 
   def handleError(f: MParserError => MParser[S, A]): MParser[S, A] = MParser { str =>
@@ -51,7 +48,7 @@ class MParser[S, A](val run: Stream[S] => Either[MParserError, (A, Stream[S])]) 
 
   def toOption(str: Stream[S]) : Option[A] = run(str) match {
     case Right((a, tail)) if tail.isEmpty => Some(a)
-    case Left(_) => None
+    case _ => None
   }
 
 }
